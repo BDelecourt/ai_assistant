@@ -2,3 +2,5 @@ torch
 transformers
 PyPDF2
 duckdb
+sentence_transformers
+pandas
