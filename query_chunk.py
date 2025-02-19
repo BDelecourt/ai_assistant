@@ -66,12 +66,6 @@ def find_k_most_similar_chunk(user_input, conn, k, batch_size):
 
     # Sort final top-k results by similarity
     most_similar_chunks.sort(reverse=True, key=lambda x: x[0])
-    return most_similar_chunks
+    print(most_similar_chunks)
+    return [chunk_ids for _, chunk_ids in most_similar_chunks]
 
-# Example usage
-conn = duckdb.connect("chunck_database.db")
-user_input = "How many cards do we have on the table in codename"
-most_similar = find_k_most_similar_chunk(user_input, conn, k=3, batch_size=15)
-
-for similarity, chunk_id in most_similar:
-    print(f"Chunk ID: {chunk_id}, Similarity: {similarity}")

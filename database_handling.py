@@ -17,6 +17,7 @@ def init_database(database_name):
     return conn
 
 def add_to_database(conn,chunk_id,text_chunk,embedding):
+
     try:
         conn.execute("INSERT INTO text_embeddings (chunk_id,text_chunk, embedding) VALUES (?,?,?)", (chunk_id, text_chunk, embedding))
     except Exception as e:
@@ -26,3 +27,14 @@ def add_to_database(conn,chunk_id,text_chunk,embedding):
     
     print(f"Successfully added Chunk:{chunk_id} to the database")
     return True
+
+def get_chunks_by_ids(conn, chunk_ids):
+    if not chunk_ids:
+        return []
+    
+    query = "SELECT text_chunk FROM text_embeddings WHERE chunk_id IN ({})".format(
+        ','.join(['?'] * len(chunk_ids))
+    )
+    
+    results = conn.execute(query, chunk_ids).fetchall()
+    return [chunk[0] for chunk in results]
