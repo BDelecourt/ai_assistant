@@ -18,7 +18,7 @@ def init_database(database_name):
 
 def add_to_database(conn,chunk_id,text_chunk,embedding):
     try:
-        conn.execute("INSERT INTO text_embeddings (chunk_id,text_chunk, embedding) VALUES (?,?, ?)", (chunk_id, text_chunk, embedding))
+        conn.execute("INSERT INTO text_embeddings (chunk_id,text_chunk, embedding) VALUES (?,?,?)", (chunk_id, text_chunk, embedding))
     except Exception as e:
         print(f"Error ! Could not add Chunk:{chunk_id} to the database because of:\n{e}")
 

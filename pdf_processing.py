@@ -67,5 +67,4 @@ conn=process_pdfs(r"C:\dev\GitHub\ai_assistant\test_documents",chunk_size=100, o
 result = conn.execute("SELECT * FROM text_embeddings LIMIT 10").fetchdf()
 
 # Show the result (Pandas DataFrame)
-
 print(result.head())
