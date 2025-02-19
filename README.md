@@ -63,3 +63,4 @@ You can then enter questions, and the assistant will retrieve relevant text chun
 
 1. Integrate the pdf processing phase into the main pipeline
 2. Look up for new pdf addition when launching the assistant and update database accordingly
+3. Build and deploy (Docker/API)
