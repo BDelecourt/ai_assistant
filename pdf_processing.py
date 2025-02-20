@@ -1,7 +1,7 @@
 import PyPDF2
 import re
 import os
-from database_handling import init_database, add_to_database
+from database_handling import init_database, add_chunk_to_database, is_pdf_processed,mark_pdf_as_processed
 from embeddings import generate_embedding
 import pandas as pd
 
@@ -44,27 +44,29 @@ def process_pdfs(pdf_folder_path,chunk_size=100, overlap_size=20):
         for pdf_file in pdf_files:
             pdf_path = os.path.join(pdf_folder_path, pdf_file)
             pdf_name = os.path.splitext(pdf_file)[0]  # Extract PDF name once
-            
-            # Extract text from the PDF
-            text = extract_text_from_pdf(pdf_path)
-            
-            # Chunk the text
-            chunks = text_chunker_by_words(text, chunk_size, overlap_size)
-            
-            # Assign IDs to each chunk
-            for i, chunk in enumerate(chunks):
-                chunk_id = f"{pdf_name}_chunk_{i+1}"
-                chunk_vector=generate_embedding(chunk)
-                add_to_database(conn,chunk_id,chunk,chunk_vector)
+
+            # Check if pdf is in database
+            if not is_pdf_processed(conn,pdf_name):
+
+                print(f"Found new pdf to process into the databse: {pdf_name}")
+
+                # Extract text from the PDF
+                print(f"Collecting text from {pdf_name}")
+                text = extract_text_from_pdf(pdf_path)
+                
+                # Chunk the text
+                print(f"Split text from {pdf_name} into chunks")
+                chunks = text_chunker_by_words(text, chunk_size, overlap_size)
+                
+                # Assign IDs to each chunk
+                for i, chunk in enumerate(chunks):
+                    chunk_id = f"{pdf_name}_chunk_{i+1}"
+                    chunk_vector=generate_embedding(chunk)
+                    add_chunk_to_database(conn,chunk_id,chunk,chunk_vector)
+                # Mark pdf as processed by adding it to the processed_pdfs table
+                mark_pdf_as_processed(conn,pdf_name)
+                print(f"Successfully processed {pdf_name}")
     except:
         return False
     
     return conn
-
-conn=process_pdfs(r"C:\dev\GitHub\ai_assistant\test_documents",chunk_size=100, overlap_size=20)
-
-# Run SQL query and fetch results as a Pandas DataFrame
-result = conn.execute("SELECT * FROM text_embeddings LIMIT 10").fetchdf()
-
-# Show the result (Pandas DataFrame)
-print(result.head())
