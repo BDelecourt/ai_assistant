@@ -1,4 +1,4 @@
-# AI Assistant with Embedding-Based Context Retrieval
+# Q&A AI Assistant with Embedding-Based Context Retrieval
 
 This project is an AI-powered assistant that utilizes embedding-based context retrieval to find the most relevant text chunks from a database and generate responses using a pre-trained language model.
 
